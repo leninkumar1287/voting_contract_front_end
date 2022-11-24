@@ -3,9 +3,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useConnection } from './connection/connection_provider';
 
 import Navbar from "./components/navbar/NavigationBar";
-import GovernancePage from "./components/pages/proposal_page/ProposalPage";
+import ProposalPage from "./components/pages/proposal_page/ProposalPage";
 import CreateProposal from "./components/pages/create_proposal_page/CreateProposal";
-import ProposalPage from "./components/pages/voting_page/VotingPage";
+import VotingPage from "./components/pages/voting_page/VotingPage";
 
 function App() {
 
@@ -23,9 +23,9 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/proposal/create_proposal" element={<CreateProposal />} />
-          <Route path="/proposal/proposal/:index" element={<ProposalPage />} />
-          <Route path="/proposal" element={<GovernancePage />} />
-          <Route path="/" element={<GovernancePage />} />
+          <Route path="/proposal/voting/:index" element={<VotingPage />} />
+          <Route path="/proposal" element={<ProposalPage />} />
+          <Route path="/" element={<ProposalPage />} />
         </Routes>
       </BrowserRouter>
     </div>

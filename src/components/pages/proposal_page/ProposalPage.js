@@ -5,7 +5,7 @@ import { Box } from '../../Box';
 import { useNavigate } from 'react-router';
 import { useConnection } from '../../../connection/connection_provider';
 
-function GovernancePage() {
+function ProposalPage() {
     const { connectionState } = useConnection();
     const { accounts, neoContract } = connectionState;
 
@@ -69,7 +69,7 @@ function GovernancePage() {
                     <div className='subtitle' style={{ textAlign: 'center' }}>No Proposals Created</div>
                     : <div className="subtitle">All Proposals</div>}
                 {proposalList.map((proposal, idx) => (
-                    <div key={idx} className="p-list-tile" onClick={() => { navigate(`/proposal/proposal/${proposal.index}`) }}>
+                    <div key={idx} className="p-list-tile" onClick={() => { navigate(`/proposal/voting/${proposal.index}`) }}>
                         <div className="p-left">
                             <p className="p-title">{proposal.title}</p>
                             <Box height="10" />
@@ -87,4 +87,4 @@ function GovernancePage() {
     );
 }
 
-export default GovernancePage;
+export default ProposalPage;

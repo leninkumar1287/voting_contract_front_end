@@ -29,16 +29,18 @@ function Navbar() {
                 <div className="nav-menu">
                     <Box width="20" />
 
-                    <div id="g" onClick={() => { navigate('/proposal') }} className="nav-option">PROPOSALS</div>
+                    <div id="g" onClick={() => { navigate('/proposal') }} className="nav-option" >PROPOSALS</div>
                 </div>
 
                 <div className="nav-btn-flex">
-                    <Chip bgColor="var(--accent)" textColor="green" content={supportedNetworks[chainId].name} />
-
+                    {accounts.length > 0 ?
+                    <Chip bgColor="var(--accent)" textColor="yellow" content={supportedNetworks[chainId].name} /> :
+                    <div></div>
+                    }
                     <Box width="20" />
 
                     {accounts.length > 0 ?
-                        <Chip bgColor="var(--accent)" textColor="green" content={
+                        <Chip bgColor="var(--accent)" textColor="yellow" content={
                             accounts[0].substring(0, 5) + '...' + accounts[0].substring(accounts[0].length - 3, accounts[0].length)
                         } /> :
                         <Chip

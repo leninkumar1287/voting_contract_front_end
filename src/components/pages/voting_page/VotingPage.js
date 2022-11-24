@@ -42,7 +42,7 @@ function ProposalPage() {
     })
 
     useEffect(() => {
-        setProposal((proposal) => ({...proposal, hasVoted: false}))
+        setProposal((proposal) => ({ ...proposal, hasVoted: false }))
         // eslint-disable-next-line
     }, [accounts])
 
@@ -86,8 +86,8 @@ function ProposalPage() {
     const handleSupportChange = (e) => {
         document.querySelector('.selected') && document.querySelector('.selected').setAttribute('class', 'option');
         e.target.classList.add('selected');
-
-        if (e.target.textContent === 'Yea') {
+        console.log("e.target.textContent :", e.target.textContent)
+        if (e.target.textContent === 'Yes, am favor') {
             setSupport(true);
         } else {
             setSupport(false);
@@ -97,14 +97,12 @@ function ProposalPage() {
     // To handle Vote
     const handleVote = async () => {
         if (support == null) {
-            setError({ vote: "Please mention your support either Yea or Nay for proposal" });
+            setError({ vote: "Please mention your support either yes or No for proposal" });
             return;
         }
         setError({ vote: "" })
         setLoading(true);
         try {
-
-            // Need to multiply support vote by 10^2 as decimal places is 2
             await neoContract.methods.voteToProposal(index, support).send({ from: accounts[0] });
             fetchData();
         } catch (e) {
@@ -185,7 +183,7 @@ function ProposalPage() {
         setLoading(false);
     }
     useEffect(() => {
-            fetchData()
+        fetchData()
         // eslint-disable-next-line 
     }, [accounts, neoContract]);
 
@@ -213,9 +211,9 @@ function ProposalPage() {
                             {states[proposal.state]}
                         </p>
                         <Box width="20" />
-                        <p className="p-date">Started : {new Date(parseInt(proposal.dateOfCreation) * 1000).toLocaleString('default', { month: 'short', day: '2-digit', year: 'numeric', hour: 'numeric', minute:'numeric', second: 'numeric'  })}</p>
+                        <p className="p-date">Started : {new Date(parseInt(proposal.dateOfCreation) * 1000).toLocaleString('default', { month: 'short', day: '2-digit', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })}</p>
                         <Box width="20" />
-                        <p className="p-date">Ended : {new Date(parseInt(proposal.deadlineForVoting) * 1000).toLocaleString('default', { month: 'short', day: '2-digit', year: 'numeric', hour: 'numeric', minute:'numeric', second: 'numeric' })}</p></div>
+                        <p className="p-date">Ended : {new Date(parseInt(proposal.deadlineForVoting) * 1000).toLocaleString('default', { month: 'short', day: '2-digit', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })}</p></div>
                 </div>
                 <p className="p-owner">
                     {`Creator ${shortenAddress(proposal.proposer)}`}
@@ -223,11 +221,11 @@ function ProposalPage() {
             </div>
 
             <Box height="30" />
-            {(!proposal.hasVoted && !isDeadlinePassed()  && !proposal.canceled) && (
+            {(!proposal.hasVoted && !isDeadlinePassed() && !proposal.canceled) && (
                 <div>
                     <div className="options-flex">
-                        <div className="option" onClick={handleSupportChange}><div>Yea</div></div>
-                        <div className="option" onClick={handleSupportChange}><div>Nay</div></div>
+                        <div className="option" onClick={handleSupportChange}><div>Yes, am favor</div></div>
+                        <div className="option" onClick={handleSupportChange}><div>No, am against</div></div>
                     </div>
 
                     <Box height="20" />
@@ -238,10 +236,10 @@ function ProposalPage() {
             )
             }
             {
-                isDeadlinePassed() && 
+                isDeadlinePassed() &&
                 <div className="options">
-                        <div className="option" ><div>Proposal Crossed DeadLine</div></div>
-                    </div>
+                    <div className="option" ><div>Proposal Crossed DeadLine</div></div>
+                </div>
             }
 
             <div className="p-grid">
@@ -249,7 +247,7 @@ function ProposalPage() {
                     <div className="card-title">
                         <div className="hr-flex">
                             <p>For</p>
-                            <p> {getTotalVotes(filterForData) } votes</p>
+                            <p> {getTotalVotes(filterForData)} votes</p>
                         </div>
                         <Box height="15" />
                         <div className="progress-bar-track">
@@ -281,7 +279,7 @@ function ProposalPage() {
                     <div className="card-title">
                         <div className="hr-flex">
                             <p>Against</p>
-                            <p> {getTotalVotes(filterAgainstData) } votes</p>
+                            <p> {getTotalVotes(filterAgainstData)} votes</p>
                         </div>
                         <Box height="15" />
                         <div className="progress-bar-track">
@@ -300,7 +298,7 @@ function ProposalPage() {
                             return (
                                 <div key={idx} className="address-tile">
                                     <p> {voterAddress}</p>
-                                    <p>{parseInt(votes) } votes</p>
+                                    <p>{parseInt(votes)} votes</p>
                                 </div>
                             );
                         })
@@ -331,7 +329,7 @@ function ProposalPage() {
             <Box height="30" />
             <p className="heading">Description</p>
             <Box height="20" />
-            <p className='description'>{proposal.proposer}</p>
+            <p className='description'>{proposal.description}</p>
             <Box height="20" />
         </div>
     );
