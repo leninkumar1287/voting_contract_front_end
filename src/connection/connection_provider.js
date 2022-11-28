@@ -5,7 +5,6 @@ import NeoToken from "../contracts/NeoToken.json";
 const defaultChainId = 1337;
 
 export const supportedNetworks = {
-    // Dummy ChainId for InitalStage its called by default
     1337: {
         name: 'Ganache Local BlockChain',
         tokenSymbol: 'ETH',
@@ -83,11 +82,14 @@ export function ConnectionProvider(props) {
         if (window.ethereum) {
             // Detect metamask account change
             window.ethereum.on('accountsChanged', async function (_accounts) {
+                console.log("_accounts :",_accounts)
+                setConnectionState({ ...connectionState, accounts: _accounts })
                 connectWallet()
             })
 
             // Detect metamask network change
             window.ethereum.on('chainChanged', function (networkId) {
+                setConnectionState({ ...connectionState, accounts: networkId })
                 connectWallet();
             });
         }

@@ -41,10 +41,10 @@ function ProposalPage() {
         state: 0
     })
 
-    useEffect(() => {
-        setProposal((proposal) => ({ ...proposal, hasVoted: false }))
-        // eslint-disable-next-line
-    }, [accounts])
+    // useEffect(() => {
+    //     // setProposal((proposal) => ({ ...proposal, hasVoted: false }))
+    //     // eslint-disable-next-line
+    // }, [accounts])
 
     // Helper to shorten address
     const shortenAddress = (addr) => {
@@ -53,12 +53,15 @@ function ProposalPage() {
 
     // To check if account[0] has voted
     const checkHasVoted = (votes) => {
-        for (let i = 0; i < votes.length; i++) {
-            if (votes[i].voterAddress.toLowerCase() === accounts[0].toLowerCase()) {
-                return true;
+        if(accounts[0]) {
+            for (let i = 0; i < votes.length; i++) {
+                if (votes[i].voterAddress.toLowerCase() === accounts[0].toLowerCase()) {
+                    return true;
+                }
             }
+            return false;
         }
-        return false;
+        return false
     }
 
     // To check if deadline for voting is over
@@ -86,7 +89,6 @@ function ProposalPage() {
     const handleSupportChange = (e) => {
         document.querySelector('.selected') && document.querySelector('.selected').setAttribute('class', 'option');
         e.target.classList.add('selected');
-        console.log("e.target.textContent :", e.target.textContent)
         if (e.target.textContent === 'Yes, am favor') {
             setSupport(true);
         } else {
@@ -97,7 +99,7 @@ function ProposalPage() {
     // To handle Vote
     const handleVote = async () => {
         if (support == null) {
-            setError({ vote: "Please mention your support either yes or No for proposal" });
+            setError({ vote: "Please mention your support either yes or No" });
             return;
         }
         setError({ vote: "" })
@@ -109,7 +111,6 @@ function ProposalPage() {
             if (e.code === 4001) {
                 setError({ vote: "Denied Metamask Transaction Signature" });
             } else {
-                console.log(e)
                 setError({ vote: "Smart Contract Error. See Console" });
             }
         }
@@ -127,7 +128,6 @@ function ProposalPage() {
             if (e.code === 4001) {
                 setError({ buttons: "Denied Metamask Transaction Signature" });
             } else {
-                console.log(e)
                 setError({ buttons: "Smart Contract Error. See Console" });
             }
         }
@@ -145,7 +145,6 @@ function ProposalPage() {
             if (e.code === 4001) {
                 setError({ buttons: "Denied Metamask Transaction Signature" });
             } else {
-                console.log(e)
                 setError({ buttons: "Smart Contract Error. See Console" });
             }
         }
@@ -159,7 +158,7 @@ function ProposalPage() {
                 const response = await neoContract.methods.proposals(parseInt(index)).call();
                 const res = await neoContract.methods.getVotes(parseInt(index)).call();
                 const voted = checkHasVoted(res);
-                const st = await neoContract.methods.stateOfTheProposal(parseInt(index)).call();
+                const stateOfTheProposal = await neoContract.methods.stateOfTheProposal(parseInt(index)).call();
                 setProposal({
                     againstVotes: response.againstVotes,
                     announced: response.announced,
@@ -174,16 +173,37 @@ function ProposalPage() {
                     voterCount: response.voterCount,
                     votes: res,
                     hasVoted: voted,
-                    state: parseInt(st)
+                    state: parseInt(stateOfTheProposal)
                 })
             }
         } catch (error) {
-            console.log(error.message)
+            debugger
         }
         setLoading(false);
     }
+
+    const handleProposalMakeAsEnded = async () => {
+        if (proposal.deadlineForVoting < Date.now() && window.confirm("Do u want to mark this proposal as ended before its deadline  ?")) {
+            setError({ buttons: '' })
+            setLoading(true)
+            try {
+                await neoContract.methods.markProposalEnded(index).send({ from: accounts[0] })
+                setLoading(false)
+                fetchData()
+            } catch (error) {
+                if (error.code === 4001) {
+                    setError({ buttons: "Denied Metamask Transaction Signature" });
+                } else {
+                    setError({ buttons: "Smart Contract Error. See Console" });
+                }
+            }
+            setError(false)
+        }
+    }
+
     useEffect(() => {
         fetchData()
+        setProposal((proposal) => ({ ...proposal, hasVoted: false }))
         // eslint-disable-next-line 
     }, [accounts, neoContract]);
 
@@ -311,12 +331,18 @@ function ProposalPage() {
                     accounts[0] && (
                         <div>
                             {
-                                (!isDeadlinePassed() && proposal.proposer.toLowerCase() === accounts[0].toLowerCase() && !proposal.canceled) &&
+                                (!isDeadlinePassed() && proposal.voterCount <= 0 && proposal.proposer.toLowerCase() === accounts[0].toLowerCase()
+                                    && !proposal.canceled) &&
                                 <button className='clickable' onClick={handleCancelProposal}>Cancel Proposal</button>
                             }
                             {
-                                (isDeadlinePassed() && !proposal.announced && !proposal.canceled && accounts[0]) &&
+                                (isDeadlinePassed() && !proposal.announced && !proposal.canceled
+                                    && proposal.proposer.toLowerCase() === accounts[0].toLowerCase()) &&
                                 <button className='clickable' onClick={handleDeclareResult}>Declare Result</button>
+                            }{<> </>}
+                            {
+                                !isDeadlinePassed() && (proposal.proposer.toLowerCase() === accounts[0].toLowerCase() && !proposal.canceled && !proposal.announced) &&
+                                <button className='clickable' onClick={handleProposalMakeAsEnded}>mark Proposal Ended</button>
                             }
                         </div>
                     )

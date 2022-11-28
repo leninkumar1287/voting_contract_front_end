@@ -79,7 +79,7 @@ function ProposalPage() {
                                 <p className="p-date">{new Date(parseInt(proposal.dateOfCreation) * 1000).toLocaleString('default', { month: 'long', day: '2-digit', year: 'numeric' })}</p>
                             </div>
                         </div>
-                        <p className="p-status">{getStatus(proposal.state)}</p>
+                        <p className="p-status">{parseInt(proposal.voterCount) === 0 ? "No votes" : getStatus(proposal.state)}</p>
                     </div>
                 ))}
             </div>
