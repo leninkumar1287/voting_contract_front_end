@@ -76,6 +76,14 @@ export function ConnectionProvider(props) {
         }
     }
 
+    const DisconnectWallet = () => {
+        setConnectionState({ ...connectionState,web3: null,
+            chainId: defaultChainId,
+            accounts: [],
+            neoContract: null,
+            error: null});
+    }
+
     useEffect(() => {
         initiate();
 
@@ -98,7 +106,7 @@ export function ConnectionProvider(props) {
 
     return (
         <>
-            <ConnectionContext.Provider value={{ connectionState, setConnectionState, connectWallet }}>
+            <ConnectionContext.Provider value={{ connectionState, setConnectionState, connectWallet,DisconnectWallet }}>
                 {props.children}
             </ConnectionContext.Provider>
         </>

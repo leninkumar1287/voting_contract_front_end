@@ -40,7 +40,6 @@ function CreateProposal(props) {
             if (e.code === 4001) {
                 setError({ button: "Denied Metamask Transaction Signature" });
             } else {
-                console.log(e)
                 setError({ button: "Smart Contract Error. See Console" });
             }
         }
@@ -90,7 +89,7 @@ function CreateProposal(props) {
                 <p className="error">{error.button}</p>
 
                 <Box height="20" />
-                <p className="center"> You Have 1000 NEO to creating proposal </p>
+                <p className="center"> You must have 1000 NEO to creating proposal </p>
             </div>
         </div>
     );

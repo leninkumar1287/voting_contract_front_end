@@ -41,11 +41,6 @@ function ProposalPage() {
         state: 0
     })
 
-    // useEffect(() => {
-    //     // setProposal((proposal) => ({ ...proposal, hasVoted: false }))
-    //     // eslint-disable-next-line
-    // }, [accounts])
-
     // Helper to shorten address
     const shortenAddress = (addr) => {
         return `${addr.substring(0, 5)}...${addr.substring(addr.length - 3, addr.length)}`

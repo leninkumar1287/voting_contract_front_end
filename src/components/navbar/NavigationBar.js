@@ -7,7 +7,7 @@ import Chip from '../chip/Chip';
 import './navbar.scss'
 
 function Navbar() {
-    const { connectionState, connectWallet } = useConnection();
+    const { connectionState, connectWallet, DisconnectWallet } = useConnection();
     const { accounts, chainId } = connectionState;
 
     const navigate = useNavigate();
@@ -34,13 +34,13 @@ function Navbar() {
 
                 <div className="nav-btn-flex">
                     {accounts.length > 0 ?
-                    <Chip bgColor="var(--accent)" textColor="yellow" content={supportedNetworks[chainId].name} /> :
+                    <Chip bgColor="var(--accent)" textColor="yellow" content= {supportedNetworks[chainId].name} /> :
                     <div></div>
                     }
                     <Box width="20" />
 
                     {accounts.length > 0 ?
-                        <Chip bgColor="var(--accent)" textColor="yellow" content={
+                        <Chip bgColor="var(--accent)" textColor="yellow" content={"address : "+
                             accounts[0].substring(0, 5) + '...' + accounts[0].substring(accounts[0].length - 3, accounts[0].length)
                         } /> :
                         <Chip
@@ -49,7 +49,13 @@ function Navbar() {
                             content="Connect Wallet"
                         />
                     }
-
+                        <Box width = "20"/>
+                            {accounts.length > 0 &&                          
+                        <Chip
+                            onclick={DisconnectWallet}
+                            bgColor="var(--accent)" textColor="white"
+                            content="Disconnect Wallet"
+                        />}
                 </div>
             </nav>
         </div>
