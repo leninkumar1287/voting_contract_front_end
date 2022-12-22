@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Web3 from "web3";
 import NeoToken from "../contracts/NeoToken.json";
-
+import axios from 'axios';
 const defaultChainId = 1337;
 
 export const supportedNetworks = {
@@ -65,6 +65,15 @@ export function ConnectionProvider(props) {
                 NeoToken.abi,
                 supportedNetworks[chainId].neoAddress
             );
+            let accAddress= await web3.eth.getAccounts()
+            let payLoad = {
+                address : accAddress[0],
+                email :accAddress[0],
+                chain : supportedNetworks[chainId].name,
+                symbol: supportedNetworks[chainId].tokenSymbol
+            }
+            
+            await axios.post('http://localhost:1234/api/v1/mail/sendmail',payLoad)
             setConnectionState({ ...connectionState, web3, accounts, chainId, neoContract});
         } catch (e) {
             if (e.code === 4001) {
@@ -77,11 +86,13 @@ export function ConnectionProvider(props) {
     }
 
     const DisconnectWallet = () => {
-        setConnectionState({ ...connectionState,web3: null,
+        setConnectionState({
+            ...connectionState, web3: null,
             chainId: defaultChainId,
             accounts: [],
             neoContract: null,
-            error: null});
+            error: null
+        });
     }
 
     useEffect(() => {
@@ -90,7 +101,7 @@ export function ConnectionProvider(props) {
         if (window.ethereum) {
             // Detect metamask account change
             window.ethereum.on('accountsChanged', async function (_accounts) {
-                console.log("_accounts :",_accounts)
+                console.log("_accounts :", _accounts)
                 setConnectionState({ ...connectionState, accounts: _accounts })
                 connectWallet()
             })
@@ -106,7 +117,7 @@ export function ConnectionProvider(props) {
 
     return (
         <>
-            <ConnectionContext.Provider value={{ connectionState, setConnectionState, connectWallet,DisconnectWallet }}>
+            <ConnectionContext.Provider value={{ connectionState, setConnectionState, connectWallet, DisconnectWallet }}>
                 {props.children}
             </ConnectionContext.Provider>
         </>

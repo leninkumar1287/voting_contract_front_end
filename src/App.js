@@ -7,8 +7,8 @@ import ProposalPage from "./components/pages/proposal_page/ProposalPage";
 import CreateProposal from "./components/pages/create_proposal_page/CreateProposal";
 import VotingPage from "./components/pages/voting_page/VotingPage";
 
-function App() {
 
+function App() {
   const { connectionState } = useConnection();
 
   const { error } = connectionState;
